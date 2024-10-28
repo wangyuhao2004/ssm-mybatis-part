@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.wang.mapper.OrderMapper">
+
+    <!--创建自定义映射-->
+    <!--id属性:通常设置为这个resultMap所服务的那条sql语句的id加上ResultMap-->
+    <!--type属性:设置为这个resultMap所服务的那条sql语句最终要返回的类型-->
+    <resultMap id="selectOrderWithCustomerResultMap" type="com.wang.pojo.Order">
+
+        <!--第一层属性 order对象-->
+        <!--order的主键, id标签-->
+        <id column="order_id" property="orderId"/>
+
+        <!--普通列-->
+        <result column="order_name" property="orderName"/>
+        <result column="customer_id" property="customerId"/>
+
+        <!--第二层标签 对象属性赋值
+                property  对象属性名
+                javaType  对象类型(全限定名|别名)
+        -->
+        <association property="customer" javaType="com.wang.pojo.Customer">
+            <id column="customer_id" property="customerId"/>
+            <result column="customer_name" property="customerName"/>
+        </association>
+
+    </resultMap>
+
+    <!--根据ID查询订单，以及订单关联的用户的信息！-->
+    <select id="selectOrderWithCustomer" resultMap="selectOrderWithCustomerResultMap">
+        select * from t_order left join t_customer on t_order.customer_id = t_customer.customer_id
+        where t_order.order_id=#{id}
+    </select>
+
+</mapper>

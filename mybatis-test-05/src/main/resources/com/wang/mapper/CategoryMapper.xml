@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.wang.mapper.CategoryMapper">
+
+    <resultMap id="findProductsByTypenameResultMap" type="com.wang.pojo.Category">
+        <id column="id" property="id"/>
+        <result column="typename" property="typename"/>
+
+        <collection property="productList" ofType="com.wang.pojo.Product">
+            <id column="product_id" property="id"/>
+            <result column="goodsname" property="goodsname"/>
+            <result column="price" property="price"/>
+            <result column="typeid" property="typeid"/>
+        </collection>
+    </resultMap>
+
+    <select id="findProductsByTypename" resultMap="findProductsByTypenameResultMap">
+        select c.*,p.id product_id, p.goodsname, p.price, p.typeid from category c , product p where c.id = p.typeid and c.typename=#{typename};
+    </select>
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace等于mapper接口类的全限定名,这样实现对应 -->
+<mapper namespace="com.wang.mapper.EmployeeMapper">
+
+        <!--DML语句返回值类型需要在resultType中定义
+               resultType可以写类的全限定符.或者写别名
+                基本数据类型: int, double等等的别名为 _int, _double
+                包装数据类型: Integer, Double, String等等的别名为 int, double, string
+                复杂数据类型: Map, Lis等等的别名为 map, list
+                自定义数据类型,需要自己在配置文件当中指定别名
+        -->
+        <select id="queryById" resultType="employee">
+                select * from t_emp where emp_id = #{id}
+        </select>
+
+        <!--当没有实体类接受查询结果,还想要key和value时,可以使用map集合.map的key就为列名或者列的别名,value为查询出来的值-->
+        <select id="selectEmpNameAndMaxSalary" resultType="map">
+                select emp_name 员工姓名,
+                       emp_salary 员工工资,
+                       (select avg(emp_salary) from t_emp) 员工平均工资
+                       from t_emp
+                where emp_salary = (select max(emp_salary) from t_emp)
+        </select>
+
+        <!-- 插入员工数据
+                主键回显
+                userGeneratedKeys 开启主键回显
+                keyColumn 主键名
+                keyProperty 接收主键的属性名
+         -->
+        <insert id="insertEmp" useGeneratedKeys="true" keyColumn="emp_id" keyProperty="empId">
+            insert into t_emp(emp_name, emp_salary)
+            value(#{empName}, #{empSalary})
+        </insert>
+
+</mapper>
